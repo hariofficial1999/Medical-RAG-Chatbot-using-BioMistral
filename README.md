@@ -148,7 +148,7 @@ All settings are in [`app.py`](app.py) under `Fixed Defaults`:
 
 ---
 
-## 🤖 LLM Options
+## 🤖 LLM 
 
 
 
