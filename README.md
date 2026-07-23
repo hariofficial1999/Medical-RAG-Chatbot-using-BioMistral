@@ -1,6 +1,6 @@
 # 🏥 MedAssist AI — Medical RAG Chatbot & Hospital Portal
 
-> A **Retrieval-Augmented Generation (RAG)** medical chatbot and hospital portal specialized in **heart health Q&A**, built with **FastAPI**, **Streamlit**, **FAISS semantic vector search**, `all-MiniLM-L6-v2` embeddings, and **Google Gemini 2.0 Flash / BioMistral-7B** with real-time streaming responses.
+> A **Retrieval-Augmented Generation (RAG)** medical chatbot and hospital portal specialized in **heart health Q&A**, built with **FastAPI**, **Streamlit**, **FAISS semantic vector search**, `all-MiniLM-L6-v2` embeddings, and **BioMistral-7B** for instant medical knowledge retrieval.
 
 ---
 
@@ -27,7 +27,6 @@ Medical RAG Chatbot using BioMistral/
 ├── build_index.py                     # Script to pre-build FAISS vector index
 ├── healthyheart.pdf                   # Medical knowledge base PDF
 ├── requirements.txt                   # Dependencies
-├── .env                               # Config (GEMINI_API_KEY optional)
 │
 ├── faiss_index/                       # Pre-built FAISS vector store
 │   ├── index.faiss                    # Vector index
@@ -59,7 +58,7 @@ User Query (e.g. "Heart disease risk factors")
 [Context Assembly]    ← Formats medical passages with page numbers
     │
     ▼
-[Response Generator]  ← Gemini 2.0 Flash streaming / Instant RAG response
+[RAG Response Engine] ← Instant high-accuracy response with page citations
     │
     ▼
 [Web UI Output]       ← Streams response + collapsible page citations
@@ -122,7 +121,6 @@ Open your browser at: **`http://localhost:8501`**
 | **Streamlit App** | Streamlit 1.30+ |
 | **Embeddings** | `sentence-transformers` (`all-MiniLM-L6-v2`) |
 | **Vector Database** | FAISS (Facebook AI Similarity Search) |
-| **Cloud LLM** | Google Gemini 2.0 Flash (`google-generativeai`) |
 | **Local LLM** | BioMistral-7B / Qwen2.5-3B via `llama-cpp-python` |
 | **RAG Framework** | LangChain + PyPDF |
 
@@ -132,7 +130,6 @@ Open your browser at: **`http://localhost:8501`**
 
 - 📄 **Custom Knowledge Base**: Replace `healthyheart.pdf` with any medical document and delete `faiss_index/` to re-index automatically.
 - 🚨 **Emergency Contact**: Standardized to **911** in the hospital portal emergency section.
-- 🔑 **API Key (Optional)**: Set `GEMINI_API_KEY` in `.env` for AI text synthesis, or run in instant direct RAG mode out-of-the-box.
 
 ---
 
