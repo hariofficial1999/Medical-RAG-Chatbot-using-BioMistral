@@ -1,18 +1,18 @@
-# 🏥 MedAssist AI — Medical RAG Chatbot
+# 🏥 MedAssist AI — Medical RAG Chatbot & Hospital Portal
 
-> A **Retrieval-Augmented Generation (RAG)** chatbot specialized in **heart health Q&A**, built with **BioMistral-7B / Qwen2.5-3B** local models, **FAISS semantic vector search**, `all-MiniLM-L6-v2` embeddings, and **Google Gemini 2.0 Flash** with real-time token streaming.
+> A **Retrieval-Augmented Generation (RAG)** medical chatbot and hospital portal specialized in **heart health Q&A**, built with **FastAPI**, **Streamlit**, **FAISS semantic vector search**, `all-MiniLM-L6-v2` embeddings, and **Google Gemini 2.0 Flash / BioMistral-7B** with real-time streaming responses.
 
 ---
 
 ## ✨ Features
 
-- 🔍 **Semantic Search** — FAISS vector store with `all-MiniLM-L6-v2` embeddings retrieves the most relevant context passages instantly
-- 🧠 **Dual LLM Support** — Google Gemini 2.0 Flash (cloud, streamed) **or** local GGUF models (BioMistral-7B / Qwen2.5-3B, fully offline)
-- ⚡ **Token Streaming** — Gemini responses stream word-by-word so answers feel instant, no waiting
-- 🚫 **Negation Filter** — Strips negation words (no, not, never…) from queries before retrieval for better semantic matches
-- 📄 **Auto PDF Indexing** — Drop any medical PDF in the folder; the app auto-indexes it into FAISS on first launch
-- 🏷️ **Page-level Citations** — Every answer cites the exact page number from `healthyheart.pdf`
-- 🌙 **Premium Dark UI** — Hospital banner background, glassmorphism cards, animated chat bubbles, custom bot avatar
+- 🏥 **Hospital Web Portal** — Full-featured, modern dark-themed medical web app (`index.html`) with an embedded AI assistant
+- ⚡ **FastAPI Backend** — High-performance non-blocking SSE streaming API (`api.py`)
+- 🔍 **Semantic Vector Search** — FAISS vector store with `all-MiniLM-L6-v2` embeddings for instant context retrieval (<0.1s)
+- 🧠 **RAG Engine** — Retrieves exact page-numbered context from indexed medical documentation (`healthyheart.pdf`)
+- 🚫 **Negation Filtering** — Pre-filters query negation words (`no`, `not`, `never`...) for higher semantic accuracy
+- 🚨 **Emergency Triage** — Direct 24/7 cardiac emergency hotline integration (**911**)
+- 🏷️ **Source Citations** — Every answer includes collapsible citations referencing exact PDF page numbers
 
 ---
 
@@ -21,152 +21,95 @@
 ```
 Medical RAG Chatbot using BioMistral/
 │
-├── app.py                             # Main Streamlit app (UI + RAG pipeline)
-├── build_index.py                     # One-time script to pre-build FAISS index
-├── healthyheart.pdf                   # Heart health knowledge base (PDF source)
-├── requirements.txt                   # Python dependencies
-├── .env                               # Set GEMINI_API_KEY here (optional)
+├── api.py                             # FastAPI backend (SSE streaming + RAG)
+├── index.html                         # Hospital web portal & embedded chatbot
+├── app.py                             # Streamlit web application
+├── build_index.py                     # Script to pre-build FAISS vector index
+├── healthyheart.pdf                   # Medical knowledge base PDF
+├── requirements.txt                   # Dependencies
+├── .env                               # Config (GEMINI_API_KEY optional)
 │
-├── faiss_index/                       # Auto-generated FAISS vector index
-│   ├── index.faiss                    # Binary vector index
-│   └── index.pkl                      # Document metadata store
+├── faiss_index/                       # Pre-built FAISS vector store
+│   ├── index.faiss                    # Vector index
+│   └── index.pkl                      # Metadata store
 │
-├── assets/                            # UI image assets
-│   ├── hospital_banner.jpg            # Header banner background
-│   ├── hospital_full_bg.jpg           # Full page background
-│   └── bot_avatar.jpg                 # Chatbot avatar image
+├── assets/                            # Web & branding assets
+│   ├── hospital_banner.jpg
+│   ├── hospital_full_bg.jpg
+│   └── bot_avatar.jpg
 │
-├── BioMistral-7B.Q4_K_M.gguf         # (Optional) Medically fine-tuned local LLM
-└── qwen2.5-3b-instruct-q4_k_m.gguf   # (Optional) Fast lightweight local LLM
+├── BioMistral-7B.Q4_K_M.gguf         # (Optional) Medically fine-tuned LLM
+└── qwen2.5-3b-instruct-q4_k_m.gguf   # (Optional) Lightweight LLM
 ```
 
 ---
 
-## 🔄 How It Works
+## 🔄 RAG Architecture
 
 ```
-User Query
+User Query (e.g. "Heart disease risk factors")
     │
     ▼
-[Negation Filter]          ← strips "no/not/never" for cleaner retrieval
+[Negation Filter]     ← Cleans query for optimal semantic matching
     │
     ▼
-[FAISS Retriever]          ← top-2 semantic chunks from healthyheart.pdf
+[FAISS Vector Search] ← Retrieves top-3 relevant chunks from healthyheart.pdf (<0.05s)
     │
     ▼
-[Prompt Builder]           ← system prompt + context + question
+[Context Assembly]    ← Formats medical passages with page numbers
     │
     ▼
-[LLM Generation]           ← Gemini 2.0 Flash (streaming) or local GGUF
+[Response Generator]  ← Gemini 2.0 Flash streaming / Instant RAG response
     │
     ▼
-[Response + Citations]     ← answer with page references shown in UI
+[Web UI Output]       ← Streams response + collapsible page citations
 ```
 
 ---
 
 ## 🚀 Quick Start
 
-### 1. Clone / Download the project
-
-```bash
-git clone https://github.com/your-username/medical-rag-chatbot.git
-cd "Medical RAG Chatbot using BioMistral"
-```
-
-### 2. Create a virtual environment
+### 1. Setup Virtual Environment
 
 ```bash
 python -m venv .venv
 .venv\Scripts\activate        # Windows
-# source .venv/bin/activate   # macOS / Linux
+# source .venv/bin/activate   # Linux/macOS
 ```
 
-### 3. Install dependencies
+### 2. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. (Optional) Pre-build the FAISS index
-
-Run this once to build and save the vector index to disk — the app loads instantly on all future runs:
+### 3. Run FastAPI Hospital Portal (Recommended)
 
 ```bash
-python build_index.py
+uvicorn api:app --port 8000
 ```
 
-```
-============================================================
-  FAISS Index Builder for Medical RAG Chatbot
-============================================================
-[1/4] Loading PDF: healthyheart.pdf...
-[2/4] Chunking (size=500, overlap=50)...
-[3/4] Loading embedding model: all-MiniLM-L6-v2...
-[4/4] Building FAISS index and saving to 'faiss_index/'...
-  INDEX BUILT SUCCESSFULLY!
-============================================================
-```
+Open your browser at: **`http://localhost:8000`**
 
-> If you skip this step, the index is auto-built from `healthyheart.pdf` on first launch (takes ~30–60s).
+---
 
-### 5. Run the app
+### 4. Alternative: Run Streamlit Interface
 
 ```bash
 streamlit run app.py
 ```
 
-Open your browser at **http://localhost:8501**
+Open your browser at: **`http://localhost:8501`**
 
 ---
 
 ## 💬 Example Questions
 
-Try asking MedAssist AI:
-
 - *"What are the main risk factors for heart disease?"*
-- *"How does diet affect cholesterol levels?"*
+- *"How does high blood pressure damage the heart?"*
 - *"What exercises are recommended for heart health?"*
 - *"What is the difference between HDL and LDL cholesterol?"*
-- *"How does high blood pressure damage the heart?"*
-
----
-
-## ⚙️ Configuration
-
-All settings are in [`app.py`](app.py) under `Fixed Defaults`:
-
-| Setting | Default | Description |
-|---|---|---|
-| `k_passages` | `2` | Number of context chunks retrieved per query |
-| `temperature` | `0.2` | LLM creativity — lower = more factual answers |
-| `negation_filter` | `True` | Strips negation words before retrieval |
-| `chunk_size` | `500` | Characters per document chunk (in `build_index.py`) |
-| `chunk_overlap` | `50` | Overlap between chunks to preserve context |
-| Embedding model | `all-MiniLM-L6-v2` | Sentence transformer for vector search |
-| LLM (cloud) | `gemini-2.0-flash` | Google Gemini model |
-
----
-
-## 🤖 LLM 
-
-
-
-###  Local GGUF Models 🖥️
-Requires `llama-cpp-python` and a C++ compiler:
-
-```bash
-pip install llama-cpp-python
-```
-
-Place one of these in the project root:
-
-| Model | Size | Notes |
-|---|---|---|
-| `qwen2.5-3b-instruct-q4_k_m.gguf` | ~1.9 GB | Faster, lighter, general purpose |
-| `BioMistral-7B.Q4_K_M.gguf` | ~4.4 GB | Medically fine-tuned on PubMed data |
-
-> ⚠️ On Windows, if blocked by **Application Control policy (WinError 4551)**, the app automatically falls back gracefully — use Gemini instead.
+- *"How does diet affect cardiac health?"*
 
 ---
 
@@ -174,57 +117,31 @@ Place one of these in the project root:
 
 | Layer | Technology |
 |---|---|
-| **Frontend / UI** | Streamlit 1.30+ |
-| **Embedding Model** | `all-MiniLM-L6-v2` via `sentence-transformers` |
-| **Vector Store** | FAISS (CPU) |
-| **LLM — Cloud** | Google Gemini 2.0 Flash (`google-generativeai`) |
-| **LLM — Local** | BioMistral-7B / Qwen2.5-3B via `llama-cpp-python` |
-| **RAG Framework** | LangChain + LangChain-Community |
-| **PDF Parsing** | PyPDF |
-| **Env Config** | `python-dotenv` |
+| **Web Portal** | HTML5, Vanilla CSS3, Modern JS (ES6+) |
+| **Backend API** | FastAPI + Uvicorn (ASGI) |
+| **Streamlit App** | Streamlit 1.30+ |
+| **Embeddings** | `sentence-transformers` (`all-MiniLM-L6-v2`) |
+| **Vector Database** | FAISS (Facebook AI Similarity Search) |
+| **Cloud LLM** | Google Gemini 2.0 Flash (`google-generativeai`) |
+| **Local LLM** | BioMistral-7B / Qwen2.5-3B via `llama-cpp-python` |
+| **RAG Framework** | LangChain + PyPDF |
 
 ---
 
-## 📋 Requirements
+## 📌 Notes & Customization
 
-```
-streamlit>=1.30.0
-langchain>=0.1.0
-langchain-community>=0.0.20
-langchain-text-splitters>=0.0.1
-sentence-transformers>=2.2.2
-pypdf>=4.0.0
-faiss-cpu>=1.7.4
-google-generativeai>=0.5.0
-llama-cpp-python>=0.2.20   # optional — for local offline inference
-python-dotenv               # optional — for .env file support
-```
-
-Install all at once:
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## 📌 Tips & Notes
-
-- 💡 The chatbot answers based **only** on the indexed PDF — for best results use `healthyheart.pdf` or replace it with your own medical PDF
-- 🗑️ To re-index a new PDF: delete the `faiss_index/` folder and restart the app
-- 🔁 Embedding model and vector store are **cached** with `@st.cache_resource` — no reload on every query
-- 🧹 Negation filter pre-processes queries like *"foods that are not bad for the heart"* → *"foods good heart"* for better semantic matches
-- 📖 Source citations are shown per-response in a collapsible **"Retrieved Medical Sources"** expander
+- 📄 **Custom Knowledge Base**: Replace `healthyheart.pdf` with any medical document and delete `faiss_index/` to re-index automatically.
+- 🚨 **Emergency Contact**: Standardized to **911** in the hospital portal emergency section.
+- 🔑 **API Key (Optional)**: Set `GEMINI_API_KEY` in `.env` for AI text synthesis, or run in instant direct RAG mode out-of-the-box.
 
 ---
 
 ## 📄 License
 
-This project is for **educational and research purposes** only.  
-Not intended as a substitute for professional medical advice.
+Educational and research project for medical RAG architecture demonstration.
 
 ---
 
 <div align="center">
-  Made with ❤️ using BioMistral · LangChain · FAISS · Streamlit
+  Made with ❤️ using BioMistral · LangChain · FAISS · FastAPI · Streamlit
 </div>
