@@ -152,7 +152,7 @@ All settings are in [`app.py`](app.py) under `Fixed Defaults`:
 
 
 
-###  Local GGUF Models (Offline 🖥️)
+###  Local GGUF Models 🖥️
 Requires `llama-cpp-python` and a C++ compiler:
 
 ```bash
