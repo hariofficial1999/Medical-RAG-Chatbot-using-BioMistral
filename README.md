@@ -64,17 +64,7 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-### 4. Set your Gemini API Key
-
-Create a `.env` file in the project root:
-
-```env
-GEMINI_API_KEY=AIza...your_key_here...
-```
-
-> Get a **free** key at 👉 [https://aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
-
-### 5. (Optional) Pre-build the FAISS index
+### 4. (Optional) Pre-build the FAISS index
 
 ```bash
 python build_index.py
@@ -82,7 +72,7 @@ python build_index.py
 
 > If you skip this, the app will auto-build it from `healthyheart.pdf` on first launch.
 
-### 6. Run the app
+### 5. Run the app
 
 ```bash
 streamlit run app.py
