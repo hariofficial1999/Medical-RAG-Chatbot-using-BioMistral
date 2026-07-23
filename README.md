@@ -150,12 +150,9 @@ All settings are in [`app.py`](app.py) under `Fixed Defaults`:
 
 ## 🤖 LLM Options
 
-### Option A — Google Gemini 2.0 Flash (Cloud ☁️)
-- ⚡ Fastest responses with real-time token streaming
-- Requires a free API key → [Google AI Studio](https://aistudio.google.com/app/apikey)
-- Add to `.env` file: `GEMINI_API_KEY=AIza...`
 
-### Option B — Local GGUF Models (Offline 🖥️)
+
+###  Local GGUF Models (Offline 🖥️)
 Requires `llama-cpp-python` and a C++ compiler:
 
 ```bash
